@@ -38,10 +38,10 @@ jobs:
         echo "AWS_URL=${{ secrets.AWS_URL }}" >> .env
 
     - name: Deploy to CPanel via FTP (easypanel/ftp-deploy-action)
-      uses: SamKirkland/FTP-Deploy-Action@v4
+      uses: SamKirkland/FTP-Deploy-Action@4.3.3
       with:
-        ftp-server: ${{ secrets.SERVER }}  
-        ftp-username: ${{ secrets.USERNAME }} 
-        ftp-password: ${{ secrets.PASSWORD }}  
-        local-dir: "./"  # Source folder (current directory)
-        server-dir: "/ntu257.vpsttt.vn/git"  # Target folder in cPanel
+        server: ${{ secrets.SERVER }}  
+        username: ${{ secrets.USERNAME }} 
+        password: ${{ secrets.PASSWORD }}  
+        local-dir: "./" 
+        server-dir: "/ntu257.vpsttt.vn/git"  
