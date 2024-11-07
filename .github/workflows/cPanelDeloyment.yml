@@ -17,7 +17,7 @@ jobs:
       uses: shivammathur/setup-php@v2  # Cài đặt PHP
       with:
         php-version: '7.4'  # Chọn phiên bản PHP mà bạn đang sử dụng
-        extensions: mbstring, bcmath, zip  # Cài đặt các extension cần thiết cho Laravel
+        tools: 'composer'
 
     - name: Install dependencies
       run: |
@@ -40,7 +40,7 @@ jobs:
     - name: Deploy to CPanel via SSH
       uses: appleboy/ssh-action@v0.1.1 
       with:
-        ftp-server: ${{ secrets.SERVER }} 
-        ftp-username: ${{ secrets.USERNAME }}  # Tên người dùng CPanel
-        ftp-password: ${{ secrets.PASSWORD }}  # Mật khẩu CPanel
+        server: ${{ secrets.SERVER }} 
+        username: ${{ secrets.USERNAME }}  # Tên người dùng CPanel
+        password: ${{ secrets.PASSWORD }}  # Mật khẩu CPanel
         port: 21 
