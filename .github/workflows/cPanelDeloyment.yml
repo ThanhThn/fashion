@@ -3,38 +3,30 @@ name: Deploy Laravel to CPanel via FTP
 on:
   push:
     branches:
-      - main  # Thực hiện khi có push vào nhánh main
+      - main  # Trigger deployment when there's a push to the main branch
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # Chạy trên môi trường Ubuntu
+    runs-on: ubuntu-latest  # Runs on the latest Ubuntu environment
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2  # Kiểm tra mã nguồn của bạn từ GitHub
+      uses: actions/checkout@v2  # Checkout code from your GitHub repository
 
     - name: Set up PHP
-      uses: shivammathur/setup-php@v2  # Cài đặt PHP
+      uses: shivammathur/setup-php@v2  # Set up PHP
       with:
-        php-version: '7.4'  # Chọn phiên bản PHP mà bạn đang sử dụng
+        php-version: '7.4'  # Specify the PHP version you're using
         tools: 'composer'
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@v2
-      with:
-        path: ~/.composer/cache  # Caches Composer dependencies
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
 
     - name: Install dependencies
       run: |
-        curl -sS https://getcomposer.org/installer | php  # Cài đặt Composer nếu chưa có
-        php composer.phar install --no-dev --optimize-autoloader  # Cài đặt các phụ thuộc của Laravel
+        curl -sS https://getcomposer.org/installer | php  # Install Composer if not already installed
+        php composer.phar install --no-dev --optimize-autoloader  # Install Laravel dependencies
 
     - name: Build environment file
       run: |
-        cp .env.example .env  # Sao chép file .env.example thành .env
+        cp .env.example .env  # Copy .env.example to .env
         echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
         echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
         echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
@@ -45,12 +37,12 @@ jobs:
         echo "AWS_BUCKET=${{ secrets.AWS_BUCKET }}" >> .env
         echo "AWS_URL=${{ secrets.AWS_URL }}" >> .env
 
-    - name: Deploy to CPanel via FTP
-      uses: appleboy/ftp-action@v1.1.2  # Sử dụng FTP action của appleboy
+    - name: Deploy to CPanel via FTP (easypanel/ftp-deploy-action)
+      uses: easypanel/ftp-deploy-action@v1 n
       with:
-        host: ${{ secrets.SERVER }}  # Địa chỉ FTP server (ví dụ: ftp.yourdomain.com)
-        username: ${{ secrets.USERNAME }}  # Tên người dùng FTP
-        password: ${{ secrets.PASSWORD }}  # Mật khẩu FTP
-        port: 21  # Cổng FTP mặc định (21)
-        source: "./"  # Thư mục nguồn (thư mục hiện tại)
-        target: "/ntu257.vpsttt.vn/git"  # Thư mục đích trên cPanel (ví dụ: /public_html)
+        host: ${{ secrets.SERVER }}  
+        username: ${{ secrets.USERNAME }} 
+        password: ${{ secrets.PASSWORD }}  
+        port: 21  # FTP port
+        source: "./"  # Source folder (current directory)
+        target: "/ntu257.vpsttt.vn/git"  # Target folder in cPanel
