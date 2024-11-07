@@ -1,4 +1,4 @@
-name: Deploy Laravel to CPanel
+name: Deploy Laravel to CPanel via FTP
 
 on:
   push:
@@ -19,14 +19,22 @@ jobs:
         php-version: '7.4'  # Chọn phiên bản PHP mà bạn đang sử dụng
         tools: 'composer'
 
+    - name: Cache Composer dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.composer/cache  # Caches Composer dependencies
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-
+
     - name: Install dependencies
       run: |
-        curl -sS https://getcomposer.org/installer | php  # Cài đặt Composer
+        curl -sS https://getcomposer.org/installer | php  # Cài đặt Composer nếu chưa có
         php composer.phar install --no-dev --optimize-autoloader  # Cài đặt các phụ thuộc của Laravel
 
     - name: Build environment file
       run: |
-        cp .env.example .env  
+        cp .env.example .env  # Sao chép file .env.example thành .env
         echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
         echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
         echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
@@ -37,10 +45,12 @@ jobs:
         echo "AWS_BUCKET=${{ secrets.AWS_BUCKET }}" >> .env
         echo "AWS_URL=${{ secrets.AWS_URL }}" >> .env
 
-    - name: Deploy to CPanel via SSH
-      uses: appleboy/ssh-action@v0.1.1 
+    - name: Deploy to CPanel via FTP
+      uses: appleboy/ftp-action@v1.1.2  # Sử dụng FTP action của appleboy
       with:
-        server: ${{ secrets.SERVER }} 
-        username: ${{ secrets.USERNAME }}  # Tên người dùng CPanel
-        password: ${{ secrets.PASSWORD }}  # Mật khẩu CPanel
-        port: 21 
+        host: ${{ secrets.SERVER }}  # Địa chỉ FTP server (ví dụ: ftp.yourdomain.com)
+        username: ${{ secrets.USERNAME }}  # Tên người dùng FTP
+        password: ${{ secrets.PASSWORD }}  # Mật khẩu FTP
+        port: 21  # Cổng FTP mặc định (21)
+        source: "./"  # Thư mục nguồn (thư mục hiện tại)
+        target: "/ntu257.vpsttt.vn/git"  # Thư mục đích trên cPanel (ví dụ: /public_html)
