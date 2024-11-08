@@ -17,25 +17,6 @@ jobs:
       uses: shivammathur/setup-php@v2  # Set up PHP
       with:
         php-version: '7.4'  # Specify the PHP version you're using
-        tools: 'composer'
-
-    - name: Install dependencies
-      run: |
-        curl -sS https://getcomposer.org/installer | php  # Install Composer if not already installed
-        php composer.phar install --no-dev --optimize-autoloader  # Install Laravel dependencies
-
-    - name: Build environment file
-      run: |
-        cp .env.example .env  # Copy .env.example to .env
-        echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-        echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
-        echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-        echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
-        echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
-        echo "AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}" >> .env
-        echo "AWS_BUCKET=${{ secrets.AWS_BUCKET }}" >> .env
-        echo "AWS_URL=${{ secrets.AWS_URL }}" >> .env
 
     - name: Deploy to CPanel via FTP (easypanel/ftp-deploy-action)
       uses: SamKirkland/FTP-Deploy-Action@4.3.3
