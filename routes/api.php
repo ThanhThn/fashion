@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['prefix'=>'product'],function(){
     Route::get('list', [ProductController::class, 'listProduct']);
     Route::get('detail/{id}', [ProductController::class, 'detailProduct']);
+    Route::get('similar/{id}', [ProductController::class, 'listSimilarProduct']);
 });
 
 

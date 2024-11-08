@@ -59,7 +59,7 @@ class ProductController extends Controller
 
     function listProduct()
     {
-        $result = Product::with(['thumbnail', 'category'])->get();
+        $result = Product::with(['thumbnail'])->get();
         foreach ($result as $product) {
             $product->variants = json_decode($product->variants);
         }
@@ -84,5 +84,17 @@ class ProductController extends Controller
             'status' => JsonResponse::HTTP_OK,
             'body' => $product
         ], JsonResponse::HTTP_OK);
+    }
+
+    function listSimilarProduct($id)
+    {
+        $products = Product::with(['thumbnail'])->where('category_id',$id)->get();
+        foreach ($products as $product) {
+            $product->variants = json_decode($product->variants);
+        }
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => $products
+        ]);
     }
 }
