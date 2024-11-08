@@ -60,6 +60,10 @@ class ProductController extends Controller
     function listProduct()
     {
         $result = Product::with(['thumbnail', 'category'])->get();
+        foreach ($result as $product) {
+            $product->variants = json_decode($product->variants);
+        }
+
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => $result
