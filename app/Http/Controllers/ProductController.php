@@ -46,7 +46,7 @@ class ProductController extends Controller
             Product::create([
                 'name' => $request->name,
                 'sort_description' => $request->sort_description,
-                'variants' => json_encode($request->variants),
+                'variants' => $request->variants,
                 'description' => $request->description,
                 'category_id' => $request->category,
                 'thumbnail_id' => $thumbnail->id,
