@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller
 {
@@ -31,5 +35,47 @@ class LoginController extends Controller
         return back()->withErrors([
             'email' => 'Thông tin đăng nhập không chính xác.',
         ])->withInput(); // Giữ lại giá trị input cũ ngoại trừ mật khẩu
+    }
+
+    function loginUser(Request $request){
+        $token = JWTAuth::attempt($request->only('email', 'password'));
+
+        if(!$token){
+            return response()->json([
+                'success' => JsonResponse::HTTP_UNAUTHORIZED,
+                'body' => [
+                    'message' => 'Authentication Failed',
+                ]
+            ]);
+        }
+
+        return response()->json([
+            "status" => JsonResponse::HTTP_OK,
+            "body" => [
+                'token' => $token,
+            ]
+        ]);
+    }
+
+    function infor()
+    {
+        $userId = Auth::user()->id;
+        $user = User::where('id', $userId)->first();
+
+        if(!$user) {
+            return response()->json([
+                'status' => JsonResponse::HTTP_UNAUTHORIZED,
+                'body' => [
+                    'message' => 'Authentication Failed',
+                ]
+            ]);
+        }
+
+        return response()->json([
+            "status" => JsonResponse::HTTP_OK,
+            "body" => [
+                'user' => $user,
+            ]
+        ], JsonResponse::HTTP_OK);
     }
 }

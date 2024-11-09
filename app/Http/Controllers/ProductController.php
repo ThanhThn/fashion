@@ -78,7 +78,7 @@ class ProductController extends Controller
             return response()->json([
                 'status' => JsonResponse::HTTP_NOT_FOUND,
                 'body' => 'Not found'
-            ], JsonResponse::HTTP_NOT_FOUND);
+            ], JsonResponse::HTTP_OK);
         }
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
@@ -95,6 +95,6 @@ class ProductController extends Controller
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => $products
-        ]);
+        ], JsonResponse::HTTP_OK);
     }
 }
