@@ -85,9 +85,6 @@ class ProductController extends Controller
     function listSimilarProduct($id)
     {
         $products = Product::with(['thumbnail'])->where('category_id',$id)->get();
-        foreach ($products as $product) {
-            $product->variants = json_decode($product->variants);
-        }
         return response()->json([
             'status' => JsonResponse::HTTP_OK,
             'body' => $products
