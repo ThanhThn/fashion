@@ -70,7 +70,6 @@ class ProductController extends Controller
     function detailProduct($id)
     {
         $product = Product::with(['thumbnail', 'category'])->find($id);
-        $product->variants = json_decode($product->variants);
         if(!$product){
             return response()->json([
                 'status' => JsonResponse::HTTP_NOT_FOUND,
