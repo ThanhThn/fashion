@@ -42,7 +42,7 @@ class LoginController extends Controller
 
         if(!$token){
             return response()->json([
-                'success' => JsonResponse::HTTP_UNAUTHORIZED,
+                'status' => JsonResponse::HTTP_UNAUTHORIZED,
                 'body' => [
                     'message' => 'Authentication Failed',
                 ]
