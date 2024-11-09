@@ -26,6 +26,9 @@ class Product extends Model
     protected $keyType = 'string';  // UUID is a string, not an integer
     protected $hidden = ['updated_at', 'created_at'];
 
+    protected $casts = [
+        'variants' => 'array',  // Laravel sẽ tự động giải mã JSON thành mảng
+    ];
     protected static function boot()
     {
         parent::boot();
