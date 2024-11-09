@@ -62,7 +62,7 @@ class CartController extends Controller
             $result = Cart::create([
                 'user_id' => Auth::user()->id,
                 'product_id' => $request->product_id,
-                'variants' => json_encode($variant)
+                'variants' => $variant
             ]);
         }
 
