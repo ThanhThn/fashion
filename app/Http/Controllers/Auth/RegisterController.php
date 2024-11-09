@@ -8,6 +8,7 @@ use HttpResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class RegisterController extends Controller
 {
@@ -39,10 +40,11 @@ class RegisterController extends Controller
         ]);
 
         if($user){
+            $token = JWTAuth::attempt(['email' => $email, 'password' => $password]);
             return response()->json([
                 'status' => JsonResponse::HTTP_CREATED,
                 'body' => [
-                    'user' => $user,
+                    'token' => $token,
                 ]
             ], JsonResponse::HTTP_OK);
         }
