@@ -90,4 +90,58 @@ class ProductController extends Controller
             'body' => $products
         ], JsonResponse::HTTP_OK);
     }
+
+    function isOrderQuantityValid (Request $request)
+    {
+        $data = $request->input("products_need_check");
+        $productIds = array_keys($data);
+        $errors = [];
+
+        $products = Product::whereIn('id', $productIds)
+            ->get()
+            ->keyBy('id');
+
+        foreach ($data as $productId => $requestedVariants) {
+            $product = $products[$productId] ?? null;
+
+            if (!$product) {
+                $errors[] = "Sản phẩm với ID {$productId} không tồn tại.";
+                continue;
+            }
+
+            $variants = $product->variants;
+
+            foreach ($requestedVariants as $request) {
+                $size = $request['size'];
+                $requiredQuantity = $request['quantity'] ?? 0;
+                $found = false;
+                foreach ($variants as $variant) {
+                    if($variant['size'] == $size  ){
+                        $found = true;
+                        if($variant['stored'] < $requiredQuantity)
+                            $errors[] = "Sản phẩm {$product->name} với size ". strtoupper($size) ." không đủ số lượng bạn cần. Hiện tại: {$variant['stored']}.";
+                        break;
+                    }
+                }
+
+                if (!$found){
+                    $errors[] = "Sản phẩm {$product->name} không có size ". strtoupper($size) ." trong kho.";
+                }
+            }
+        }
+        if($errors){
+            return response()->json([
+                'status' => JsonResponse::HTTP_BAD_REQUEST,
+                'body' => [
+                    'message' => $errors
+                ]
+            ], JsonResponse::HTTP_OK);
+        }
+        return response()->json([
+            'status' => JsonResponse::HTTP_OK,
+            'body' => [
+                'message' => 'Success'
+            ]
+        ], JsonResponse::HTTP_OK);
+    }
 }

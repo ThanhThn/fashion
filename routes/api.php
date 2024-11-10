@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -33,12 +34,17 @@ Route::group(['prefix' => 'client'], function (){
         Route::post('/add', [CartController::class, "addToCart"]);
         Route::post('/delete', [CartController::class, "removeFromCart"]);
     });
+
+    Route::group(['prefix' => "order"], function (){
+        Route::post('/create', [OrderController::class, "createOrder"]);
+    });
 } );
 
 Route::group(['prefix'=>'product'],function(){
     Route::get('list', [ProductController::class, 'listProduct']);
     Route::get('detail/{id}', [ProductController::class, 'detailProduct']);
     Route::get('similar/{id}', [ProductController::class, 'listSimilarProduct']);
+    Route::post('/check_store', [ProductController::class, 'isOrderQuantityValid']);
 });
 
 
