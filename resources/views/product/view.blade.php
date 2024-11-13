@@ -344,12 +344,7 @@
                                     </th>
                                     <td class="budget">
                                         @php
-                                            $decodedOnce = json_decode($product->variants); // Decode once
-                                            if (is_string($decodedOnce)) {
-                                                $variants = json_decode($decodedOnce);
-                                            } else {
-                                                $variants = $decodedOnce;
-                                            }
+                                              $variants = $product->variants;
                                         @endphp
 
                                         @if(is_array($variants) || is_object($variants))
@@ -359,12 +354,12 @@
 
                                             @foreach($variants as $variant)
                                                 @php
-                                                    $sum += (int)$variant->stored;
+                                                    $sum += (int)$variant['stored'];
                                                 @endphp
                                             @endforeach
                                             {{$sum}}
                                         @else
-                                            {{-- Handle the case where variants are invalid or empty --}}
+                                             Handle the case where variants are invalid or empty
                                             <p>No variants available or invalid data.</p>
                                         @endif
                                     </td>
